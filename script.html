@@ -1,0 +1,97 @@
+<script>
+    //get the oauth information
+    
+    function getOauth(){
+      google.script.run.withSuccessHandler( function(data){
+        if(data != ""){
+          console.log(data);
+          document.getElementById("oauthLink").href= data;
+        }
+        else{
+        document.getElementById("oauthLink").innerHTML = "successfully connect to google fit "
+        document.getElementById("oauthLink").addEventListener("click", function(){
+          document.getElementById("oauthLink").style.display="none"
+        });;
+        
+        setTimeout(function(){ document.getElementById("oauthLink").style.display="none" }, 10000);
+        
+        }
+      }).withFailureHandler(showError).getOauth2();
+    }
+    
+    
+    function showError(message, isError) {
+      var messageDiv = document.getElementById('error');
+      if(isError){
+        messageDiv.innerHTML = 'Error: ' + message;
+        messageDiv.style.background = 'rgb(255, 56, 56)';
+      }
+      else{
+        messageDiv.innerHTML = message;
+        messageDiv.style.background = 'rgb(166, 120, 255)';
+      }
+      
+      messageDiv.style.display="inherit";
+      //csvFile = file.getBlob().getDataAsString();
+      console.log(message);
+    }
+    
+    function formSumit(event){
+      event.preventDefault();
+      document.getElementById('error').style.display="none";
+      var kvpairs = {};
+      var form = document.getElementById("settingForm");
+      var fitDataTypes = [];
+      for ( var i = 0; i < form.elements.length; i++ ) {
+        var e = form.elements[i];
+        if(e.type == "checkbox"){
+         if(e.checked == true){
+           fitDataTypes.push(e.name);
+         }
+        }
+        else if(e.name !="submit"){
+         kvpairs[e.name] = e.value;
+        }
+      }
+      kvpairs["fitSyncData"] = fitDataTypes;
+      console.log(kvpairs)
+      if(kvpairs["fitSyncData"].length !== 0){
+        google.script.run.withSuccessHandler( function(data){
+          showError("success", false)
+        }).withFailureHandler(showError).savePageSetting(kvpairs);
+      }
+      else{
+        showError("please select a item to sync", true)
+      }
+      return false;
+    }
+    
+    function getPageSetting(){
+        google.script.run.withSuccessHandler( function(data){
+          var keys = Object.keys(data)
+          
+          keys.forEach(function(key){
+            if(key == "fitSyncData"){
+              data["fitSyncData"].forEach(function(id){
+                document.getElementById(id).checked = true;
+              });
+            }
+            else{
+              document.getElementById(key).value = data[key];
+            }
+          })
+          console.log(data)
+      }).withFailureHandler(showError).getPageSetting();
+    }
+    
+    
+    document.getElementById("refreshButton").addEventListener('click',function(){
+       google.script.run.withSuccessHandler( function(data){
+          showError("success", false)
+        }).withFailureHandler(showError).loadDataToSpreadSheet();
+    });
+    
+    getOauth();
+    getPageSetting();
+    
+</script>

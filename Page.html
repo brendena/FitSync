@@ -3,214 +3,34 @@
   <head>
     <base target="_top">
   </head>
-  <style>
-  /*my code*/
-  .checkBoxContainer{
-    padding:20px;
-  }
-  #error{
-    padding: 30px;
-  }
-  .buttonStyle{
-    padding: 10px;
-    width:100%; 
-    margin-top:20px;
-    border:0;
-    text-align: center;
-  }
-  /* Base for label styling */
-  [type="checkbox"]:not(:checked),
-  [type="checkbox"]:checked {
-  position: absolute;
-  left: -9999px;
-  }
-  [type="checkbox"]:not(:checked) + label,
-  [type="checkbox"]:checked + label {
-  position: relative;
-  padding-left: 1.95em;
-  cursor: pointer;
-  }
   
-  /* checkbox aspect */
-  [type="checkbox"]:not(:checked) + label:before,
-  [type="checkbox"]:checked + label:before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0;
-  width: 1.25em; height: 1.25em;
-  border: 2px solid #ccc;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
-  }
-  /* checked mark aspect */
-  [type="checkbox"]:not(:checked) + label:after,
-  [type="checkbox"]:checked + label:after {
-  content: '✔';
-  position: absolute;
-  top: .1em; left: .3em;
-  font-size: 1.3em;
-  line-height: 0.8;
-  color: #09ad7e;
-  transition: all .2s;
-  }
-  /* checked mark aspect changes */
-  [type="checkbox"]:not(:checked) + label:after {
-  opacity: 0;
-  transform: scale(0);
-  }
-  [type="checkbox"]:checked + label:after {
-  opacity: 1;
-  transform: scale(1);
-  }
-  /* disabled checkbox */
-  [type="checkbox"]:disabled:not(:checked) + label:before,
-  [type="checkbox"]:disabled:checked + label:before {
-  box-shadow: none;
-  border-color: #bbb;
-  background-color: #ddd;
-  }
-  [type="checkbox"]:disabled:checked + label:after {
-  color: #999;
-  }
-  [type="checkbox"]:disabled + label {
-  color: #aaa;
-  }
-  /* accessibility */
-  [type="checkbox"]:checked:focus + label:before,
-  [type="checkbox"]:not(:checked):focus + label:before {
-  border: 2px dotted blue;
-  }
+  <?!= include('styles'); ?>
   
-  /* hover style just for information */
-  label:hover:before {
-  border: 2px solid #4778d9!important;
-  
-  }
-
-  </style>
-
   <body style="padding-top:20px; margin:0px;">
     <a id="oauthLink" class="buttonStyle" style="display:block;padding-left: 0; padding-right: 0;  margin: 0px; background: rgba(251, 255, 0, 0.78)">link to connect to google fit</a>
     <div id="error" style="display:none; "></div>
     <div>
-    <form onsubmit="return formSumit(event)" id="settingForm" style="margin: 8px;">
-    
-    <!--google fit was released on october 28 2014-->
-    <label for="startingDate">starting date</label><input type="date" min="2014-10-28" required name="startingDate" id="startingDate">
-    
-    <p>data types to sync with from google fit</p>
-    
-    <div class="checkBoxContainer">
-      <input type="checkbox" name="estimatedSteps" id="estimatedSteps"> <label for="estimatedSteps">estimated steps</label>
-    </div>
-    <div class="checkBoxContainer">
-      <input type="checkbox" name="weight" id="weight"><label for="weight">weight</label>
-    </div>
-    <div class="checkBoxContainer">
-      <input type="checkbox" name="calories" id="calories"><label for="calories">calories burned</label>
-    </div>
-    <input id="submitButton" class="buttonStyle" type="submit" name="submit" style="background: #85d9f3;">
-    </form>
-    <button id="refreshButton" class="buttonStyle" type="submit" style="background: #ffffff; border: solid;"> Grab Latest Data</button>
-    </div>
-    <script>
-    //get the oauth information
-    
-    function getOauth(){
-      google.script.run.withSuccessHandler( function(data){
-        if(data != ""){
-          console.log(data);
-          document.getElementById("oauthLink").href= data;
-        }
-        else{
-        document.getElementById("oauthLink").innerHTML = "successfully connect to google fit "
-        document.getElementById("oauthLink").addEventListener("click", function(){
-          document.getElementById("oauthLink").style.display="none"
-        });;
-        
-        setTimeout(function(){ document.getElementById("oauthLink").style.display="none" }, 10000);
-        
-        }
-      }).withFailureHandler(showError).getOauth2();
-    }
-    
-    
-    function showError(message, isError) {
-      var messageDiv = document.getElementById('error');
-      if(isError){
-        messageDiv.innerHTML = 'Error: ' + message;
-        messageDiv.style.background = 'rgb(255, 56, 56)';
-      }
-      else{
-        messageDiv.innerHTML = message;
-        messageDiv.style.background = 'rgb(166, 120, 255)';
-      }
+      <form onsubmit="return formSumit(event)" id="settingForm" style="margin: 8px;">
       
-      messageDiv.style.display="inherit";
-      //csvFile = file.getBlob().getDataAsString();
-      console.log(message);
-    }
-    
-    function formSumit(event){
-      event.preventDefault();
-      document.getElementById('error').style.display="none";
-      var kvpairs = {};
-      var form = document.getElementById("settingForm");
-      var fitDataTypes = [];
-      for ( var i = 0; i < form.elements.length; i++ ) {
-        var e = form.elements[i];
-        if(e.type == "checkbox"){
-         if(e.checked == true){
-           fitDataTypes.push(e.name);
-         }
-        }
-        else if(e.name !="submit"){
-         kvpairs[e.name] = e.value;
-        }
-      }
-      kvpairs["fitSyncData"] = fitDataTypes;
-      console.log(kvpairs)
-      if(kvpairs["fitSyncData"].length !== 0){
-        google.script.run.withSuccessHandler( function(data){
-          showError("success", false)
-        }).withFailureHandler(showError).savePageSetting(kvpairs);
-      }
-      else{
-        showError("please select a item to sync", true)
-      }
-      return false;
-    }
-    
-    function getPageSetting(){
-        google.script.run.withSuccessHandler( function(data){
-          var keys = Object.keys(data)
-          
-          keys.forEach(function(key){
-            if(key == "fitSyncData"){
-              data["fitSyncData"].forEach(function(id){
-                document.getElementById(id).checked = true;
-              });
-            }
-            else{
-              document.getElementById(key).value = data[key];
-            }
-          })
-          console.log(data)
-      }).withFailureHandler(showError).getPageSetting();
-    }
-    
-    
-    document.getElementById("refreshButton").addEventListener('click',function(){
-       google.script.run.withSuccessHandler( function(data){
-          showError("success", false)
-        }).withFailureHandler(showError).loadDataToSpreadSheet();
-    });
-    
-    getOauth();
-    getPageSetting();
-    
-  </script>
+        <!--google fit was released on october 28 2014-->
+        <label for="startingDate">starting date</label><input type="date" min="2014-10-28" required name="startingDate" id="startingDate">
+      
+        <p>data types to sync with from google fit</p>
+          <div class="checkBoxContainer">
+            <input type="checkbox" name="estimatedSteps" id="estimatedSteps"> <label for="estimatedSteps">estimated steps</label>
+          </div>
+          <div class="checkBoxContainer">
+            <input type="checkbox" name="weight" id="weight"><label for="weight">weight</label>
+          </div>
+          <div class="checkBoxContainer">
+            <input type="checkbox" name="calories" id="calories"><label for="calories">calories burned</label>
+          </div>
+          <input id="submitButton" class="buttonStyle" type="submit" name="submit" style="background: #85d9f3;">
+        </form>
+      <button id="refreshButton" class="buttonStyle" type="submit" style="background: #ffffff; border: solid;"> Grab Latest Data</button>
+    </div>
+
+  <?!= include('script'); ?>
   </body>
 </html>
 

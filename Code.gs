@@ -9,9 +9,12 @@ function onOpen() {
 
 
 function showSidebar() {
+  /* old way of doing it
   var html = HtmlService.createHtmlOutputFromFile('Page')
       .setTitle('Fit Sync')
       .setWidth(300);
+   */
+  var html = doGet().setTitle('Fit Sync').setWidth(300);
   SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
       .showSidebar(html);
 }
@@ -23,3 +26,14 @@ function onInstall(){
       .create();
 }
 
+
+function doGet() {
+  return HtmlService
+      .createTemplateFromFile('Page')
+      .evaluate();
+}
+
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename)
+      .getContent();
+}
