@@ -3,17 +3,18 @@
     
     function getOauth(){
       google.script.run.withSuccessHandler( function(data){
+        var oathLink = document.getElementById("oauthLink");
         if(data != ""){
           console.log(data);
-          document.getElementById("oauthLink").href= data;
+          oathLink.href= data;
         }
         else{
-        document.getElementById("oauthLink").innerHTML = "successfully connect to google fit "
-        document.getElementById("oauthLink").addEventListener("click", function(){
-          document.getElementById("oauthLink").style.display="none"
+        oathLink.innerHTML = "successfully connect to google fit "
+        oathLink.addEventListener("click", function(){
+          oathLink.style.display="none"
         });;
         
-        setTimeout(function(){ document.getElementById("oauthLink").style.display="none" }, 10000);
+        setTimeout(function(){ oathLink.style.display="none" }, 10000);
         
         }
       }).withFailureHandler(showError).getOauth2();
@@ -21,18 +22,23 @@
     
     
     function showError(message, isError) {
-      var messageDiv = document.getElementById('error');
+      var messageDiv = document.getElementById('messageDiv');
+      messageDiv.classList.remove("error", "alert");
       if(isError){
         messageDiv.innerHTML = 'Error: ' + message;
-        messageDiv.style.background = 'rgb(255, 56, 56)';
+        messageDiv.classList.add("error");
       }
       else{
         messageDiv.innerHTML = message;
-        messageDiv.style.background = 'rgb(166, 120, 255)';
+        messageDiv.classList.add("alert");
+        setTimeout(function(){ messageDiv.style.display="none" }, 10000);
       }
       
       messageDiv.style.display="inherit";
-      //csvFile = file.getBlob().getDataAsString();
+      
+      messageDiv.addEventListener("click", function(){
+        messageDiv.style.display="none"
+      });;
       console.log(message);
     }
     

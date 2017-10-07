@@ -1,11 +1,23 @@
 
   <style>
+  
   /*my code*/
+  body{
+    margin:0px;
+  }
   .checkBoxContainer{
     padding:20px;
   }
-  #error{
-    padding: 30px;
+  #messageDiv{
+    padding: 10px;
+    padding-left: 40px;
+  }
+  #reloadIcon{
+    font-size: 2.4em;
+    padding-right: 10px;
+    position: absolute;
+    left: 50px;
+    margin-top: -10px
   }
   .buttonStyle{
     padding: 10px;
@@ -13,6 +25,48 @@
     margin-top:20px;
     border:0;
     text-align: center;
+  }
+  #header{
+    width: 100%;
+    background: #fa0239;
+    padding: 1em 0;
+    text-align: center;
+  }
+  #headerText{
+    margin:0;
+    /*not the best way to change font size
+      but it does the trick without changing
+      the div around it*/
+    transform: scale(2,1.5);
+  }
+  #logo{
+    position: absolute;
+    left: 5px;
+    top: 0px;
+    height: 60px;
+    width: 51px;
+    transition: 1s;
+  }
+  /* looks kind of cool */
+  /*
+  #logo:hover{
+    background:white;
+    left:0px;
+  }
+  */
+  .actionButton{
+    background: rgb(255, 225, 93);
+    transition:.2s;
+  }
+  .actionButton:hover{
+    background:rgba(255, 217, 57, 0.4);
+    transform: scale(.95,.95);
+  }
+  .alert{
+    background:rgb(255, 141, 71);
+  }
+  .error{
+   color:red; 
   }
   /* Base for label styling */
   [type="checkbox"]:not(:checked),
@@ -47,7 +101,7 @@
   top: .1em; left: .3em;
   font-size: 1.3em;
   line-height: 0.8;
-  color: #09ad7e;
+  color: #a19ef3;
   transition: all .2s;
   }
   /* checked mark aspect changes */
@@ -75,13 +129,13 @@
   /* accessibility */
   [type="checkbox"]:checked:focus + label:before,
   [type="checkbox"]:not(:checked):focus + label:before {
-  border: 2px dotted blue;
+  border: 2px dotted #fa0239;
   }
   
-  /* hover style just for information */
+  /* hover style just for information  
+    color: #a19ef3;*/
   label:hover:before {
-  border: 2px solid #4778d9!important;
-  
+    border: 2px solid #fa0239!important;
   }
 
   </style>
