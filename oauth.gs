@@ -40,16 +40,12 @@ function getOAuthService() {
 
       // Set the scopes to request (space-separated for Google services).
       .setScope('https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read')
-
       // Below are Google-specific OAuth2 parameters.
 
       // Sets the login hint, which will prevent the account chooser screen
       // from being shown to users logged in with multiple accounts.
+      .setParam('access_type', 'offline')
       .setParam('login_hint', Session.getActiveUser().getEmail())
-
-     
-    .setParam('access_type', 'offline')
-    .setParam('login_hint', Session.getActiveUser().getEmail())
     .setParam('approval_prompt', 'auto');
 }
 

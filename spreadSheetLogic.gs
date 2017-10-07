@@ -19,7 +19,6 @@ function loadDataToSpreadSheet(){
   //
   var todayDate = new Date()
   todayDate.setHours(0,0,0,0);
-  var endingDate = new Date();
   
   
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -52,9 +51,12 @@ function loadDataToSpreadSheet(){
       mySpreadSheetObject.headerValues(["start", "end", syncTopic]);
     }
     var jumpAmount = 30;
-
-    while(startingDate < todayDate){
-      endingDate.setDate(startingDate.getDate() + jumpAmount);
+    var numberOfSeconds = startingDate.getTime();
+    for(var i = 0; startingDate < todayDate; i++){
+      //There a problem assigning ending date from starting date
+      //It just doesn't work properly.
+      var endingDate = new Date(numberOfSeconds);
+      endingDate.setDate(jumpAmount * i);
       if(endingDate >= todayDate){
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         /  Can't do endingDate = todayDate because
@@ -67,10 +69,10 @@ function loadDataToSpreadSheet(){
         endingDate = new Date();
         endingDate.setHours(0,0,0,0);
       }
-      Logger.log(endingDate)
       var data = getFitData(startingDate, endingDate, syncTopic);
       mySpreadSheetObject.append(data);
       startingDate.setDate(startingDate.getDate() + jumpAmount);
+      
     }
   })
  

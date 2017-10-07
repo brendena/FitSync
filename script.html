@@ -4,6 +4,7 @@
     function getOauth(){
       google.script.run.withSuccessHandler( function(data){
         var oathLink = document.getElementById("oauthLink");
+        console.log(data)
         if(data != ""){
           console.log(data);
           oathLink.href= data;
@@ -12,7 +13,7 @@
         oathLink.innerHTML = "successfully connect to google fit "
         oathLink.addEventListener("click", function(){
           oathLink.style.display="none"
-        });;
+        });
         
         setTimeout(function(){ oathLink.style.display="none" }, 10000);
         
@@ -25,6 +26,8 @@
       var messageDiv = document.getElementById('messageDiv');
       messageDiv.classList.remove("error", "alert");
       if(isError){
+        console.log(message);
+        
         messageDiv.innerHTML = 'Error: ' + message;
         messageDiv.classList.add("error");
       }
@@ -44,7 +47,7 @@
     
     function formSumit(event){
       event.preventDefault();
-      document.getElementById('error').style.display="none";
+      document.getElementById('messageDiv').style.display="none";
       var kvpairs = {};
       var form = document.getElementById("settingForm");
       var fitDataTypes = [];
@@ -96,6 +99,10 @@
           showError("success", false)
         }).withFailureHandler(showError).loadDataToSpreadSheet();
     });
+    
+    //function parseError(error){
+    //  if()
+    //}
     
     getOauth();
     getPageSetting();
