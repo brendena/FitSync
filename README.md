@@ -1,3 +1,5 @@
+![alt text](https://github.com/brendena/FitSync/blob/master/images/logo.png?raw=true)
+
 # [FitSync Google Sheets Extension](https://chrome.google.com/webstore/detail/fit-sync/inpbnmkmjmcbfmhhojijbimpiieifekh?hl=en)
 You can find the extension [here](https://chrome.google.com/webstore/detail/fit-sync/inpbnmkmjmcbfmhhojijbimpiieifekh?hl=en)
 
