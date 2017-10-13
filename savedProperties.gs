@@ -4,7 +4,7 @@ var nameGlobalProperties = "savedProperties"
 function getAllSavedProperties(){
   var savedPropertiesString =  getUserProperties().getProperty(nameGlobalProperties);
   var savedPropertiesJson = JSON.parse(savedPropertiesString)
-  if(savedPropertiesJson == 'undefined' || typeof(savedPropertiesJson) === "Object"){
+  if(savedPropertiesJson == null || savedPropertiesJson == 'undefined' || typeof(savedPropertiesJson) === "Object"){
     savedPropertiesJson = {};
   }
   return savedPropertiesJson;

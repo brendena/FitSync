@@ -12,6 +12,7 @@
       <p id="headerText">
         Fit Sync
       </p>
+      <?!= include('helpIcon'); ?>
     </div>
     <a id="oauthLink" class="buttonStyle alert" style="display:block;padding-left: 0; padding-right: 0;  margin: 0px;">link to connect to google fit</a>
     <div id="messageDiv" style="display:none; "></div>
@@ -33,6 +34,9 @@
           </div>
           <div class="checkBoxContainer">
             <input type="checkbox" name="activitys" id="activitys"><label for="activitys">activitys</label>
+          </div>
+          <div class="checkBoxContainer">
+            <input type="checkbox" name="heartRate" id="heartRate"><label for="heartRate"> heart rate</label>
           </div>
           <input id="submitButton" class="buttonStyle actionButton" type="submit" name="submit">
         </form>

@@ -1,3 +1,11 @@
+//https://developers.google.com/apps-script/guides/services/authorization#manual_authorization_scopes_for_sheets_docs_and_forms
+/*
+Make the extension only avaible to the current document
+*/
+/**
+ * @OnlyCurrentDoc
+ */
+
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Fit Sync')
       .addItem('Menu', 'showSidebar')
@@ -9,17 +17,13 @@ function onOpen() {
 
 
 function showSidebar() {
-  /* old way of doing it
-  var html = HtmlService.createHtmlOutputFromFile('Page')
-      .setTitle('Fit Sync')
-      .setWidth(300);
-   */
   var html = doGet().setTitle('Fit Sync').setWidth(300);
   SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
       .showSidebar(html);
 }
 
 function onInstall(){
+  onOpen();
   ScriptApp.newTrigger('loadDataToSpreadSheet')
       .timeBased()
       .everyHours(24)

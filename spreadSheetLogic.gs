@@ -1,11 +1,3 @@
-function myFunction() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var mySpreadSheetObject = createSpreadSheetObject(ss);
-  var data = getFitData()
-  mySpreadSheetObject.append(data);
-  //sheet.getRange(2,1,data.length,data[0].length).setValues(data);
-}
-
 function startNewSpreadSheet(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var mySpreadSheetObject = createSpreadSheetObject(ss);
@@ -15,18 +7,9 @@ function startNewSpreadSheet(){
 
 /*load all the data into the spread sheet*/
 function loadDataToSpreadSheet(){
-
-  //
-  var todayDate = new Date()
-  todayDate.setHours(0,0,0,0);
   
-  
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var mySpreadSheetObject = createSpreadSheetObject(ss);
-  
-  
+  var mySpreadSheetObject = createSpreadSheetObject(SpreadsheetApp.getActiveSpreadsheet());
   var fitTopicsSync = getSpecificSavedProperties("fitSyncData")
-  
   mySpreadSheetObject.checkAndCreateSheets(fitTopicsSync);
   
   fitTopicsSync.forEach(function(syncTopic){
@@ -36,44 +19,67 @@ function loadDataToSpreadSheet(){
     var startingDate = new Date(mySpreadSheetObject.getCellValue(-1,2));
     
     if(startingDate.toString() === "Invalid Date" ){
-      /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      /  The dates get entered wrong if you
-      /  don't manually put them in.
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-      dateString = getSpecificSavedProperties("startingDate");
-      var parts = dateString.match(/(\d+)/g);
-      // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
-      startingDate = new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
-      
+      startingDate = getDateWithOffset(new Date(getSpecificSavedProperties("startingDate")));
       mySpreadSheetObject.clearSheet();
     }
+    
     if(mySpreadSheetObject.headerPresent() === false){
-      mySpreadSheetObject.headerValues(["start", "end", syncTopic]);
+      mySpreadSheetObject.headerValues(getHeadersData(syncTopic));
     }
-    var jumpAmount = 30;
-    var numberOfSeconds = startingDate.getTime();
-    for(var i = 0; startingDate < todayDate; i++){
-      //There a problem assigning ending date from starting date
-      //It just doesn't work properly.
-      var endingDate = new Date(numberOfSeconds);
-      endingDate.setDate(jumpAmount * i);
-      if(endingDate >= todayDate){
-        /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        /  Can't do endingDate = todayDate because
-        /  It will pass it in by reference and 
-        /  whenever you chagne endingDate it will
-        /  Change todays date.  Resulting in a 
-        /  unending loop where startingDate is always
-        /  less then todayDate
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        endingDate = new Date();
-        endingDate.setHours(0,0,0,0);
+                                                      // setHours return a number
+    var dateManager = GeneratorDateManager(startingDate,new Date(new Date().setHours(0,0,0,0)),30)
+
+    if(dateManager.valid()){
+      do{
+        var data = getFitData(dateManager.getStartingDate(),dateManager.getEndingDate(), syncTopic);
+        mySpreadSheetObject.append(data);
+  
       }
-      var data = getFitData(startingDate, endingDate, syncTopic);
-      mySpreadSheetObject.append(data);
-      startingDate.setDate(startingDate.getDate() + jumpAmount);
-      
+      while(dateManager.next());
     }
+    else{
+      throw "can't have a starting date before today";
+    }
+
+    
   })
- 
 }
+
+//Object that holds today
+//hold
+function GeneratorDateManager(startingDate, endingDate, itterationAmmount){
+  
+  return{
+    _startingDate: startingDate,
+    _endingDate: endingDate,
+    _itterationAmmount: itterationAmmount,
+    _itteration: 0,
+    reset: function(){
+      this._itteration = 0
+    },
+    valid: function(){
+      var startingDate = this.getStartingDate();
+      var endingDate = this.getEndingDate();
+      if(startingDate < endingDate){
+        return true;
+      }
+      return false;
+    },
+    next: function(){
+      this._itteration++;
+      return this.valid();
+    },
+    getStartingDate: function(){
+      return this.calculateDate(this._itteration);
+    },
+    getEndingDate: function(){
+      var newEndingDate = this.calculateDate(this._itteration + 1);
+      if(newEndingDate > this._endingDate)
+        return this._endingDate;
+      return newEndingDate;
+    },
+    calculateDate: function(num){
+      return new Date(this._startingDate.getTime() + num * this._itterationAmmount * 86400000)//iteration amount times milliseconds in a day
+    }
+  }
+} 

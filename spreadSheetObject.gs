@@ -20,6 +20,7 @@ function createSpreadSheetObject(spreadSheet){
     "activeSpreadSheet": objectSpreadSheet.getSheets()[0],
     "append":function(data){
       var lastRow =  this["activeSpreadSheet"].getLastRow() + 1;
+      Logger.log(data);
       this["activeSpreadSheet"].getRange(lastRow, 1, 
                                          data.length, 
                                          data[0].length).setValues(data);
