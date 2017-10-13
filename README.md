@@ -13,3 +13,4 @@ Currently support measurments include
 * activitys
 * steps
 * calories
+* heart rate
