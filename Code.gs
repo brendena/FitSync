@@ -24,6 +24,9 @@ function showSidebar() {
 
 function onInstall(){
   onOpen();
+  /*https://developers.google.com/apps-script/guides/triggers/installable
+  
+  */
   ScriptApp.newTrigger('loadDataToSpreadSheet')
       .timeBased()
       .everyHours(24)

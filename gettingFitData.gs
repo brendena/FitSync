@@ -34,11 +34,14 @@ var syncTopicConst = {
   "heartRate":{
     "requestInfo":{
       "sourceId": "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm",
-      "duration": 120000 // 5 minutes
+      "duration": 300000 // 5 minutes
     },
     "header": ["start","stop","average - BPM","max - BPM","min - BPM"],
   },
   "activitys":{
+    "requestInfo":{
+      "duration": 120000 // 20 minutes
+    },
     "header": ["start","stop","activitys"]
   }
 }
@@ -54,6 +57,9 @@ var dataTypeValues = {
 
 function getHeadersData(syncTopic){
   return syncTopicConst[syncTopic].header;
+}
+function getEarliestNextCall(syncTopic){
+  return syncTopicConst[syncTopic].requestInfo.duration;
 }
 
 function getFitData(startingDate, endingDate, syncTopic) {
@@ -94,9 +100,7 @@ function getAggregateData(startingDate, endingDate, syncTopic){
     return bucket["dataset"][0]["point"].length != 0; 
   }).map(function(bucket){
     return parseBucketSection(bucket["dataset"][0]["point"][0]);
-  });
-
-
+  })
   return allData;
 }
 
@@ -149,7 +153,6 @@ function parseBucketSection(bucketSection){
   else if(bucketSection["value"] != undefined){
  
     var specificDataTypesValues =  dataTypeValues[bucketSection["dataTypeName"]];
-    Logger.log(specificDataTypesValues);
     if(bucketSection["value"].length == specificDataTypesValues.length ){
       for(var i = 0; i < bucketSection["value"].length; i++){
          
@@ -160,6 +163,8 @@ function parseBucketSection(bucketSection){
   else{
     throw "something wen't wrong with the data"
   }
+
+
   return returnArray;
 }
 //valueData = bucketSection["dataset"][0]["point"][0]["value"][0][syncTopicTypeValue[syncTopic]];
@@ -168,15 +173,13 @@ function convertFitnessDataTypes(value,type){
   returnValue = undefined;
   switch(type){
     case "dateNano":
-      returnValue = convertNanosecondsToDate(parseInt(value));
+      returnValue = convertNanosecondsToDate(parseInt(value)).toString();
       break;
     case "dateMilli":
-      returnValue = convertMillisecondsToDate(parseInt(value));
+      returnValue = convertMillisecondsToDate(parseInt(value)).toString();
       break;
     case "intVal":
     case "fpVal":
-      Logger.log(type)
-      Logger.log(value)
       returnValue = Number(value);
       break;
     case "activitys":

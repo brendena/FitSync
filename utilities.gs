@@ -7,7 +7,7 @@ function staticVars() {
 
 
 function convertMillisecondsToDate(milliSeconds){
-  return new Date(milliSeconds).toString()
+  return new Date(milliSeconds)
 }
 function convertNanosecondsToDate(nanoSeconds){
   return convertMillisecondsToDate(nanoSeconds/1000000)

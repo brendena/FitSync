@@ -5,15 +5,44 @@
   body{
     margin:0px;
   }
+  #togglHelpPageButton{
+    float:right; 
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  #togglHelpPageButton:hover{
+    color:red;
+  }
+  .hideHelpPage{
+    margin-left: -150vw;
+    opacity:0;
+  }
+  #helpPage{
+    width: 95vw;
+    height: 90vh;
+    top: 1vh;
+    left:0;
+    position:fixed;
+    z-index: 2;
+    border: 3px solid;
+    background:white;
+    transition: 1s;
+    box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+    overflow: auto;
+  }
   .checkBoxContainer{
     padding:20px;
   }
   #helpIcon{
     height: 20px;
-    position: fixed;
+    position: absolute;
     right: 20px;
     top: 15px;
     cursor: pointer;
+    transition:1s;
+  }
+  #helpIcon:hover{
+    fill: rgb(244, 236, 158);
   }
   #messageDiv{
     padding: 10px;
@@ -36,15 +65,12 @@
   #header{
     width: 100%;
     background: #fa0239;
-    padding: 1em 0;
+    padding: 0.5em 0;
     text-align: center;
   }
   #headerText{
     margin:0;
-    /*not the best way to change font size
-      but it does the trick without changing
-      the div around it*/
-    transform: scale(2,1.5);
+    font-size:30px;
   }
   #logo{
     position: absolute;

@@ -41,7 +41,7 @@
       
       messageDiv.addEventListener("click", function(){
         messageDiv.style.display="none"
-      });;
+      });
       console.log(message);
     }
     
@@ -108,11 +108,8 @@
     getPageSetting();
     
     
-    document.getElementById("helpIcon").addEventListener('click',function(){
-      /*I should clean this up*/
-      alert("You first have to select a start date.  Which is the earliest that you remember using the service." +
-         "Then select the things you want to sync and hit submit.  Then all you have to is hit refresh whenever you need " +
-         "the latest data");
-    })
+    var toggleHelpPage = function(){
+      document.getElementById("helpPage").classList.toggle("hideHelpPage");
+    }
     
 </script>

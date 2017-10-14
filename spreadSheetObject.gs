@@ -20,10 +20,19 @@ function createSpreadSheetObject(spreadSheet){
     "activeSpreadSheet": objectSpreadSheet.getSheets()[0],
     "append":function(data){
       var lastRow =  this["activeSpreadSheet"].getLastRow() + 1;
+      Logger.log("data");
       Logger.log(data);
-      this["activeSpreadSheet"].getRange(lastRow, 1, 
+      Logger.log(Array.isArray(data[0]) )
+      if(data.length !== 0 && Array.isArray(data[0]) ){
+        this["activeSpreadSheet"].getRange(lastRow, 1, 
                                          data.length, 
                                          data[0].length).setValues(data);
+        
+      }
+      else{
+        throw "there something wrong with inputed data";
+      }
+      
     },
     "getAllValues":function(){
       return this["activeSpreadSheet"].getRange(2,1,this["activeSpreadSheet"].getLastRow(),this["activeSpreadSheet"].getLastColumn()).getValues()
